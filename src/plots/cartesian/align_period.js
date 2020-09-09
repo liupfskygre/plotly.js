@@ -39,7 +39,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
     }
 
     if(period > 0) {
-        var ratio = 1; // (alignment === 'end') ? 1 : 0.5;
+        var ratio = 0.5; // (alignment === 'end') ? 1 : 0.5;
 
         var len = vals.length;
         for(var i = 0; i < len; i++) {
@@ -82,43 +82,43 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
                 delta = period;
             }
 
-            var v1 = v0 + ratio * delta;
+            var v2 = v0 + ratio * delta;
 
-            var dateStr1 = ms2DateTime(v1, 0, ax.calendar);
-            var d1 = new Date(dateStr1);
-            d1 = new Date(d1.getTime() + d1.getTimezoneOffset() * 60000);
-            var year1 = d1.getFullYear();
-            var month1 = d1.getMonth();
-            var day1 = d1.getDate();
-            var hours1 = d1.getHours();
-            var minutes1 = d1.getMinutes();
-            var seconds1 = d1.getSeconds();
-            var milliseconds1 = d1.getMilliseconds();
+            var dateStr2 = ms2DateTime(v2, 0, ax.calendar);
+            var d2 = new Date(dateStr2);
+            d2 = new Date(d2.getTime() + d2.getTimezoneOffset() * 60000);
+            var year2 = d2.getFullYear();
+            var month2 = d2.getMonth();
+            var day2 = d2.getDate();
+            var hours2 = d2.getHours();
+            var minutes2 = d2.getMinutes();
+            var seconds2 = d2.getSeconds();
+            var milliseconds2 = d2.getMilliseconds();
 
-            if(month1 < month0) month1 += 12;
-            if(day1 < day0) {
+            if(month2 < month0) month2 += 12;
+            if(day2 < day0) {
                 var nDays = (
-                    new Date(year1, month1, 0)
+                    new Date(year2, month2, 0)
                 ).getDate();
 
-                day1 += nDays;
+                day2 += nDays;
             }
-            if(hours1 < hours0) hours1 += 24;
-            if(minutes1 < minutes0) minutes1 += 60;
-            if(seconds1 < seconds0) seconds1 += 60;
-            if(milliseconds1 < milliseconds0) milliseconds1 += 1000;
+            if(hours2 < hours0) hours2 += 24;
+            if(minutes2 < minutes0) minutes2 += 60;
+            if(seconds2 < seconds0) seconds2 += 60;
+            if(milliseconds2 < milliseconds0) milliseconds2 += 1000;
 
-            var newYear = Math.floor((year0 + year1) / 2);
-            var newMonth = Math.floor((month0 + month1) / 2);
-            var newDay = Math.floor((day0 + day1) / 2);
-            var newHours = Math.floor((hours0 + hours1) / 2);
-            var newMinutes = Math.floor((minutes0 + minutes1) / 2);
-            var newSeconds = Math.floor((seconds0 + seconds1) / 2);
-            var newMilliseconds = Math.floor((milliseconds0 + milliseconds1) / 2);
+            var newYear = Math.floor((year0 + year2) / 2);
+            var newMonth = Math.floor((month0 + month2) / 2);
+            var newDay = Math.floor((day0 + day2) / 2);
+            var newHours = Math.floor((hours0 + hours2) / 2);
+            var newMinutes = Math.floor((minutes0 + minutes2) / 2);
+            var newSeconds = Math.floor((seconds0 + seconds2) / 2);
+            var newMilliseconds = Math.floor((milliseconds0 + milliseconds2) / 2);
 
-            console.log('year:', year0, year1, newYear)
-            console.log('month:', month0, month1, newMonth)
-            console.log('day:', day0, day1, newDay)
+            console.log('year:', year0, year2, newYear)
+            console.log('month:', month0, month2, newMonth)
+            console.log('day:', day0, day2, newDay)
 
             var newDate = new Date(
                 newYear,
@@ -130,11 +130,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
                 newMilliseconds
             );
 
-            // console.log(newDate)
-
             var newV = newDate.getTime();
-
-            // console.log((newV - v0) / (v1 - v0))
 
             vals[i] = newV;
         }
