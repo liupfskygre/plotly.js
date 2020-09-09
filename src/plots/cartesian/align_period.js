@@ -39,7 +39,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
     }
 
     if(period > 0) {
-        var ratio = 0.5; // (alignment === 'end') ? 1 : 0.5;
+        var ratio = (alignment === 'end') ? 1 : 0.5;
 
         var len = vals.length;
         for(var i = 0; i < len; i++) {
@@ -82,7 +82,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
                 delta = period;
             }
 
-            var v2 = v0 + ratio * delta;
+            var v2 = v0 + delta;
 
             var dateStr2 = ms2DateTime(v2, 0, ax.calendar);
             var d2 = new Date(dateStr2);
@@ -108,31 +108,31 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             if(seconds2 < seconds0) seconds2 += 60;
             if(milliseconds2 < milliseconds0) milliseconds2 += 1000;
 
-            var newYear = Math.floor((year0 + year2) / 2);
-            var newMonth = Math.floor((month0 + month2) / 2);
-            var newDay = Math.floor((day0 + day2) / 2);
-            var newHours = Math.floor((hours0 + hours2) / 2);
-            var newMinutes = Math.floor((minutes0 + minutes2) / 2);
-            var newSeconds = Math.floor((seconds0 + seconds2) / 2);
-            var newMilliseconds = Math.floor((milliseconds0 + milliseconds2) / 2);
+            var year1 = Math.floor((year0 + year2) / 2);
+            var month1 = Math.floor((month0 + month2) / 2);
+            var day1 = Math.floor((day0 + day2) / 2);
+            var hours1 = Math.floor((hours0 + hours2) / 2);
+            var minutes1 = Math.floor((minutes0 + minutes2) / 2);
+            var seconds1 = Math.floor((seconds0 + seconds2) / 2);
+            var milliseconds1 = Math.floor((milliseconds0 + milliseconds2) / 2);
 
-            console.log('year:', year0, year2, newYear)
-            console.log('month:', month0, month2, newMonth)
-            console.log('day:', day0, day2, newDay)
+            console.log('year:', year0, year1, year2)
+            console.log('month:', month0, month1, month2)
+            console.log('day:', day0, day1, day2)
 
-            var newDate = new Date(
-                newYear,
-                newMonth,
-                newDay,
-                newHours,
-                newMinutes,
-                newSeconds,
-                newMilliseconds
-            );
+            var d1;
+            if(year2 !== year0) {
+                d1 = new Date(year1, 6);
+            } else if(month2 !== month0) {
+                d1 = new Date(year1, month1, 15);
+            } else if(day2 !== day0) {
+                d1 = new Date(year1, month1, day1, 12);
+            } else {
+                d1 = d0; // what should we do?
+            }
+            d1 = new Date(d1.getTime() + d1.getTimezoneOffset() * 60000);
 
-            var newV = newDate.getTime();
-
-            vals[i] = newV;
+            vals[i] = d1.getTime();
         }
     }
     return vals;
