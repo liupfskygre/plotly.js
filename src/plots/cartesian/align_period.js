@@ -39,7 +39,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
     }
 
     if(period > 0) {
-        var ratio = (alignment === 'end') ? 1 : 0.5;
+        var ratio = 0.5; // (alignment === 'end') ? 1 : 0.5;
 
         var len = vals.length;
         for(var i = 0; i < len; i++) {
@@ -48,7 +48,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             var dateStr0 = ms2DateTime(v0, 0, ax.calendar);
             var d0 = new Date(dateStr0);
             var year0 = d0.getFullYear();
-            var month0 = d0.getMonth();
+            var month0 = d0.getMonth() + 1;
             var day0 = d0.getDay();
             var hours0 = d0.getHours();
             var minutes0 = d0.getMinutes();
@@ -70,7 +70,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
                     }
 
                     var daysOfMonth = (
-                        new Date(y, m + 1, 0)
+                        new Date(y, m, 0)
                     ).getDate();
 
                     totalDaysInMonths += daysOfMonth;
@@ -86,19 +86,21 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             var dateStr1 = ms2DateTime(v1, 0, ax.calendar);
             var d1 = new Date(dateStr1);
             var year1 = d1.getFullYear();
-            var month1 = d1.getMonth();
+            var month1 = d1.getMonth() + 1;
             var day1 = d1.getDay();
             var hours1 = d1.getHours();
             var minutes1 = d1.getMinutes();
             var seconds1 = d1.getSeconds();
             var milliseconds1 = d1.getMilliseconds();
 
-            var daysOfMonth1 = (
-                new Date(year1, month1, 0)
-            ).getDate();
-
             if(month1 < month0) month1 += 12;
-            if(day1 < day0) day1 += daysOfMonth1;
+            if(day1 < day0) {
+                var nDays = (
+                    new Date(year1, month1 + 1, 0)
+                ).getDate();
+
+                day1 += nDays;
+            }
             if(hours1 < hours0) hours1 += 24;
             if(minutes1 < minutes0) minutes1 += 60;
             if(seconds1 < seconds0) seconds1 += 60;
