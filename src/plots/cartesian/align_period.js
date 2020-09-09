@@ -51,10 +51,6 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             var year0 = d0.getFullYear();
             var month0 = d0.getMonth();
             var day0 = d0.getDate();
-            var hours0 = d0.getHours();
-            var minutes0 = d0.getMinutes();
-            var seconds0 = d0.getSeconds();
-            var milliseconds0 = d0.getMilliseconds();
 
             var delta;
             if(dynamic) {
@@ -90,31 +86,39 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             var year2 = d2.getFullYear();
             var month2 = d2.getMonth();
             var day2 = d2.getDate();
-            var hours2 = d2.getHours();
-            var minutes2 = d2.getMinutes();
-            var seconds2 = d2.getSeconds();
-            var milliseconds2 = d2.getMilliseconds();
 
+            /*
             if(month2 < month0) month2 += 12;
             if(day2 < day0) {
-                var nDays = (
+                var nDays2 = (
                     new Date(year2, month2, 0)
                 ).getDate();
 
-                day2 += nDays;
+                day2 += nDays2;
             }
-            if(hours2 < hours0) hours2 += 24;
-            if(minutes2 < minutes0) minutes2 += 60;
-            if(seconds2 < seconds0) seconds2 += 60;
-            if(milliseconds2 < milliseconds0) milliseconds2 += 1000;
+            */
 
-            var year1 = Math.floor((year0 + year2) / 2);
-            var month1 = Math.floor((month0 + month2) / 2);
-            var day1 = Math.floor((day0 + day2) / 2);
-            var hours1 = Math.floor((hours0 + hours2) / 2);
-            var minutes1 = Math.floor((minutes0 + minutes2) / 2);
-            var seconds1 = Math.floor((seconds0 + seconds2) / 2);
-            var milliseconds1 = Math.floor((milliseconds0 + milliseconds2) / 2);
+            var year1 = (year0 + year2) / 2;
+            var month1 = (month0 + month2) / 2;
+            var day1 = (day0 + day2) / 2;
+
+            var rYear = Math.floor(year1);
+            if(rYear !== year1) {
+                month1 += (year1 - rYear) * 12;
+                year1 = rYear;
+            }
+
+            var rMonth = Math.floor(month1);
+            if(rMonth !== month1) {
+                var nDays1 = (
+                    new Date(year1, month1, 0)
+                ).getDate();
+
+                day1 += (month1 - rMonth) * nDays1;
+                month1 = rMonth;
+            }
+
+            day1 = Math.floor(day1);
 
             console.log('year:', year0, year1, year2)
             console.log('month:', month0, month1, month2)
@@ -128,7 +132,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             } else if(day2 !== day0) {
                 d1 = new Date(year1, month1, day1, 12);
             } else {
-                d1 = d0; // what should we do?
+                continue;
             }
             d1 = new Date(d1.getTime() + d1.getTimezoneOffset() * 60000);
 
