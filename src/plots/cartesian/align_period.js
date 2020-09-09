@@ -39,7 +39,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
     }
 
     if(period > 0) {
-        var ratio = 0.5; // (alignment === 'end') ? 1 : 0.5;
+        var ratio = 1; // (alignment === 'end') ? 1 : 0.5;
 
         var len = vals.length;
         for(var i = 0; i < len; i++) {
@@ -47,9 +47,10 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
 
             var dateStr0 = ms2DateTime(v0, 0, ax.calendar);
             var d0 = new Date(dateStr0);
+            d0 = new Date(d0.getTime() + d0.getTimezoneOffset() * 60000);
             var year0 = d0.getFullYear();
-            var month0 = d0.getMonth() + 1;
-            var day0 = d0.getDay();
+            var month0 = d0.getMonth();
+            var day0 = d0.getDate();
             var hours0 = d0.getHours();
             var minutes0 = d0.getMinutes();
             var seconds0 = d0.getSeconds();
@@ -85,9 +86,10 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
 
             var dateStr1 = ms2DateTime(v1, 0, ax.calendar);
             var d1 = new Date(dateStr1);
+            d1 = new Date(d1.getTime() + d1.getTimezoneOffset() * 60000);
             var year1 = d1.getFullYear();
-            var month1 = d1.getMonth() + 1;
-            var day1 = d1.getDay();
+            var month1 = d1.getMonth();
+            var day1 = d1.getDate();
             var hours1 = d1.getHours();
             var minutes1 = d1.getMinutes();
             var seconds1 = d1.getSeconds();
@@ -96,7 +98,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             if(month1 < month0) month1 += 12;
             if(day1 < day0) {
                 var nDays = (
-                    new Date(year1, month1 + 1, 0)
+                    new Date(year1, month1, 0)
                 ).getDate();
 
                 day1 += nDays;
