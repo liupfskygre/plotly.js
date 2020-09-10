@@ -111,7 +111,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             var rMonth = Math.floor(month1);
             if(rMonth !== month1) {
                 var nDays1 = (
-                    new Date(year1, month1, 0)
+                    new Date(year1, month1 + 1, 0)
                 ).getDate();
 
                 day1 += (month1 - rMonth) * nDays1;
@@ -125,14 +125,16 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             console.log('day:', day0, day1, day2)
 
             var d1;
-            if(year2 !== year0) {
+            if(year2 === year0 + 1) {
                 d1 = new Date(year1, 6);
-            } else if(month2 !== month0) {
-                d1 = new Date(year1, month1, 15);
-            } else if(day2 !== day0) {
-                d1 = new Date(year1, month1, day1, 12);
+            } else if(month2 === month0 + 1) {
+                var midMonthDay = Math.floor(1 + 0.5 * (
+                    new Date(year1, month1 + 1, 0)
+                ).getDate());
+
+                d1 = new Date(year1, month1, midMonthDay);
             } else {
-                continue;
+                d1 = new Date(year1, month1, day1);
             }
             d1 = new Date(d1.getTime() + d1.getTimezoneOffset() * 60000);
 
