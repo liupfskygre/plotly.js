@@ -31,9 +31,9 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
     }
 
     if(period > 0) {
-        var isStart = (alignment === 'start');
-        var isMiddle = (alignment === 'middle');
-        var isEnd = (alignment === 'end');
+        var isStart = 'start' === alignment;
+        var isMiddle = 'middle' === alignment;
+        var isEnd = 'end' === alignment;
 
         var len = vals.length;
         for(var i = 0; i < len; i++) {
@@ -107,10 +107,10 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             if(year2 === year0 + 1 && month2 === month0) {
                 if(isStart) {
                     d1 = new Date(year1, 0, 1);
-                } else if(isMiddle) {
-                    d1 = new Date(year1, 6, 1);
-                } else { // isEnd
+                } else if(isEnd) {
                     d1 = new Date(year1, 11, 31);
+                } else { // isMiddle
+                    d1 = new Date(year1, 6, 1);
                 }
             } else if(year2 === year0 && month2 === month0 + 1) {
                 var alignDay = isStart ? 1 : (
