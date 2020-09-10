@@ -105,7 +105,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             if(year2 === year0 + 1 && month2 === month0) {
                 d1 = new Date(year1, 6);
             } else if(year2 === year0 && month2 === month0 + 1) {
-                var midMonthDay = Math.floor(1 + 0.5 * (
+                var midMonthDay = Math.floor(0.5 + 0.5 * (
                     new Date(year1, month1 + 1, 0)
                 ).getDate());
 
