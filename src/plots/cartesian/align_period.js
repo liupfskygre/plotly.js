@@ -31,7 +31,9 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
     }
 
     if(period > 0) {
-        var ratio = (alignment === 'end') ? 1 : 0.5;
+        var isStart = (alignment === 'start');
+        var isMiddle = (alignment === 'middle');
+        var isEnd = (alignment === 'end');
 
         var len = vals.length;
         for(var i = 0; i < len; i++) {
@@ -70,7 +72,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
                 delta = period;
             }
 
-            var v2 = v0 + delta * ratio * 2;
+            var v2 = v0 + delta;
 
             var dateStr2 = ms2DateTime(v2, 0, ax.calendar);
             var d2 = new Date(dateStr2);
@@ -84,35 +86,44 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             var day1 = (day0 + day2) / 2;
 
             var rYear = Math.floor(year1);
-            if(rYear !== year1) {
+            if(rYear > year1) {
                 month1 += (year1 - rYear) * 12;
                 year1 = rYear;
             }
 
             var rMonth = Math.floor(month1);
-            if(rMonth !== month1) {
-                var nDays1 = (
-                    new Date(year1, month1 + 1, 0)
-                ).getDate();
-
-                day1 += (month1 - rMonth) * nDays1;
+            if(rMonth > month1) {
+                day1 += (month1 - rMonth) * 15;
                 month1 = rMonth;
             }
 
             day1 = Math.floor(day1);
 
+            console.log('year:', year0, year1, year2)
+            console.log('month:', month0, month1, month2)
+            console.log('day:', day0, day1, day2)
+
             var d1;
             if(year2 === year0 + 1 && month2 === month0) {
-                d1 = new Date(year1, 6);
+                if(isStart) {
+                    d1 = new Date(year1, 0, 1);
+                } else if(isMiddle) {
+                    d1 = new Date(year1, 6, 1);
+                } else { // isEnd
+                    d1 = new Date(year1, 11, 31);
+                }
             } else if(year2 === year0 && month2 === month0 + 1) {
-                var midMonthDay = Math.floor(0.5 + 0.5 * (
+                var alignDay = isStart ? 1 : (
                     new Date(year1, month1 + 1, 0)
-                ).getDate());
+                ).getDate();
+                if(isMiddle) alignDay = Math.floor(0.5 + 0.5 * alignDay);
 
-                d1 = new Date(year1, month1, midMonthDay);
+                d1 = new Date(year1, month1, alignDay);
             } else {
                 d1 = new Date(year1, month1, day1);
             }
+
+            console.log(d1)
 
             vals[i] = d1.getTime();
         }
