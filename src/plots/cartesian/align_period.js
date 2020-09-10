@@ -11,14 +11,6 @@
 var isNumeric = require('fast-isnumeric');
 var ms2DateTime = require('../../lib').ms2DateTime;
 var constants = require('../../constants/numerical');
-
-var ONEAVGYEAR = constants.ONEAVGYEAR;
-var ONEMINYEAR = constants.ONEMINYEAR;
-var ONEAVGQUARTER = constants.ONEAVGQUARTER;
-var ONEMINQUARTER = constants.ONEMINQUARTER;
-var ONEAVGMONTH = constants.ONEAVGMONTH;
-var ONEMINMONTH = constants.ONEMINMONTH;
-var ONEWEEK = constants.ONEWEEK;
 var ONEDAY = constants.ONEDAY;
 
 module.exports = function alignPeriod(trace, ax, axLetter, vals) {
@@ -78,7 +70,7 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
                 delta = period;
             }
 
-            var v2 = v0 + delta;
+            var v2 = v0 + delta * ratio * 2;
 
             var dateStr2 = ms2DateTime(v2, 0, ax.calendar);
             var d2 = new Date(dateStr2);
@@ -86,17 +78,6 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             var year2 = d2.getFullYear();
             var month2 = d2.getMonth();
             var day2 = d2.getDate();
-
-            /*
-            if(month2 < month0) month2 += 12;
-            if(day2 < day0) {
-                var nDays2 = (
-                    new Date(year2, month2, 0)
-                ).getDate();
-
-                day2 += nDays2;
-            }
-            */
 
             var year1 = (year0 + year2) / 2;
             var month1 = (month0 + month2) / 2;
@@ -120,14 +101,10 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
 
             day1 = Math.floor(day1);
 
-            console.log('year:', year0, year1, year2)
-            console.log('month:', month0, month1, month2)
-            console.log('day:', day0, day1, day2)
-
             var d1;
-            if(year2 === year0 + 1) {
+            if(year2 === year0 + 1 && month2 === month0) {
                 d1 = new Date(year1, 6);
-            } else if(month2 === month0 + 1) {
+            } else if(year2 === year0 && month2 === month0 + 1) {
                 var midMonthDay = Math.floor(1 + 0.5 * (
                     new Date(year1, month1 + 1, 0)
                 ).getDate());
@@ -136,7 +113,6 @@ module.exports = function alignPeriod(trace, ax, axLetter, vals) {
             } else {
                 d1 = new Date(year1, month1, day1);
             }
-            d1 = new Date(d1.getTime() + d1.getTimezoneOffset() * 60000);
 
             vals[i] = d1.getTime();
         }
